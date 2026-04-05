@@ -1,0 +1,22 @@
+<div class="doctor-appointment-container">
+    <h2>My Appointments</h2>
+    <table class="table" *ngIf="appointmentList.length > 0">
+        <thead>
+            <tr>
+                <th>Patient Name</th>
+                <th>Time</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let appointment of appointmentList">
+                <td>{{ appointment.patient?.username }}</td>
+                <td>{{ appointment.appointmentTime | date:'short' }}</td>
+                <td>{{ appointment.status }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div *ngIf="appointmentList.length === 0" class="alert alert-info">
+        No appointments found.
+    </div>
+</div>

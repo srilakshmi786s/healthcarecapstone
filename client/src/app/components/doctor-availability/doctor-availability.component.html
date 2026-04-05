@@ -1,0 +1,13 @@
+<div class="doctor-availability-container">
+    <h2>Update Availability</h2>
+    <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label for="availability">Availability Details</label>
+            <input type="text" id="availability" formControlName="availability" class="form-control" placeholder="e.g., Weekdays 9 AM - 5 PM">
+        </div>
+        <button type="submit" [disabled]="itemForm.invalid" class="btn btn-primary">Update</button>
+    </form>
+    <div *ngIf="responseMessage" class="alert mt-3" [class.alert-success]="isAdded" [class.alert-danger]="!isAdded">
+        {{ responseMessage }}
+    </div>
+</div>

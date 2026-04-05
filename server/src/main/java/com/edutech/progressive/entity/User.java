@@ -4,49 +4,41 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "user")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private Integer userId;
+    private Long id;
 
-    @Column(name = "username", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(name = "password", nullable = false)
+    @Column(nullable = false)
     private String password;
 
-    @Column(name = "role", nullable = false)
-    private String role;
+    @Column(nullable = false)
+    private String role; // Role can be PATIENT, DOCTOR, RECEPTIONIST
 
-    @OneToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "patient_id")
-    private Patient patient;
-
-    @OneToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "doctor_id")
-    private Doctor doctor;
+    private String email;
 
     public User() {
     }
 
-    public User(Integer userId, String username, String password, String role, Patient patient, Doctor doctor) {
-        this.userId = userId;
+    public User(Long id, String username, String password, String role, String email) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.role = role;
-        this.patient = patient;
-        this.doctor = doctor;
+        this.email = email;
     }
 
-    
-    public Integer getUserId() {
-        return userId;
+    public Long getId() {
+        return id;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUsername() {
@@ -73,19 +65,11 @@ public class User {
         this.role = role;
     }
 
-    public Patient getPatient() {
-        return patient;
+    public String getEmail() {
+        return email;
     }
 
-    public void setPatient(Patient patient) {
-        this.patient = patient;
-    }
-
-    public Doctor getDoctor() {
-        return doctor;
-    }
-
-    public void setDoctor(Doctor doctor) {
-        this.doctor = doctor;
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

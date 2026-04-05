@@ -1,17 +1,14 @@
 package com.edutech.progressive.config;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-
-import com.edutech.progressive.jwt.JwtRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,8 +16,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
     private final UserDetailsService userDetailsService;
     private final JwtRequestFilter jwtRequestFilter;
     private final PasswordEncoder passwordEncoder;
@@ -34,7 +31,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.passwordEncoder = passwordEncoder;
     }
 
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
@@ -42,49 +38,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable()
+        http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/user/register", "/user/login",
-                        "/api/patient/register", "/api/doctors/register",
-                        "/api/receptionist/register", "/api/user/login",
-                        "/api/auth/forgot-password", "/api/auth/reset-password").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/patient/register", "/api/doctors/register", "/api/receptionist/register", "/api/user/login").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/doctor/availability").hasAuthority("DOCTOR")
-                .antMatchers(HttpMethod.GET, "/api/doctor/appointments").hasAuthority("DOCTOR")
-                .antMatchers(HttpMethod.GET, "/api/patient/doctors").hasAuthority("PATIENT")
-                .antMatchers(HttpMethod.GET, "/api/patient/appointments").hasAuthority("PATIENT")
-                .antMatchers(HttpMethod.GET, "/api/patient/medicalrecords").hasAuthority("PATIENT")
                 .antMatchers(HttpMethod.POST, "/api/patient/appointment").hasAuthority("PATIENT")
-                .antMatchers(HttpMethod.GET, "/api/patient/availability").hasAuthority("PATIENT")
                 .antMatchers(HttpMethod.POST, "/api/receptionist/appointment").hasAuthority("RECEPTIONIST")
-                .antMatchers(HttpMethod.PUT, "/api/receptionist/appointment-reschedule/**").hasAuthority("RECEPTIONIST")
+                .antMatchers(HttpMethod.GET, "/api/patient/doctors", "/api/patient/appointments", "/api/patient/medicalrecords").hasAuthority("PATIENT")
+                .antMatchers(HttpMethod.GET, "/api/doctor/appointments").hasAuthority("DOCTOR")
                 .antMatchers(HttpMethod.GET, "/api/receptionist/appointments").hasAuthority("RECEPTIONIST")
-                .antMatchers(HttpMethod.POST, "/api/doctor/medicalrecords").hasAuthority("DOCTOR")
-                .antMatchers(HttpMethod.GET, "/api/doctor/medicalrecords/**").hasAuthority("DOCTOR")
-                .antMatchers(HttpMethod.GET, "/patient/**").hasAnyAuthority("PATIENT", "DOCTOR")
-                .antMatchers(HttpMethod.POST, "/patient/**").hasAuthority("DOCTOR")
-                .antMatchers(HttpMethod.PUT, "/patient/**").hasAuthority("PATIENT")
-                .antMatchers(HttpMethod.DELETE, "/patient/**").hasAuthority("PATIENT")
-                .antMatchers(HttpMethod.GET, "/clinic/**").hasAnyAuthority("PATIENT", "DOCTOR")
-                .antMatchers(HttpMethod.POST, "/clinic/**").hasAuthority("DOCTOR")
-                .antMatchers(HttpMethod.PUT, "/clinic/**").hasAuthority("DOCTOR")
-                .antMatchers(HttpMethod.DELETE, "/clinic/**").hasAuthority("DOCTOR")
-                .antMatchers(HttpMethod.GET, "/doctor/**").hasAnyAuthority("PATIENT", "DOCTOR")
-                .antMatchers(HttpMethod.POST, "/doctor/**").hasAuthority("DOCTOR")
-                .antMatchers(HttpMethod.PUT, "/doctor/**").hasAuthority("DOCTOR")
-                .antMatchers(HttpMethod.DELETE, "/doctor/**").hasAuthority("DOCTOR")
-                .antMatchers(HttpMethod.GET, "/appointment/**").hasAnyAuthority("PATIENT", "DOCTOR")
-                .antMatchers(HttpMethod.POST, "/appointment/**").hasAuthority("PATIENT")
-                .antMatchers(HttpMethod.DELETE, "/appointment/**").hasAuthority("DOCTOR")
-                .antMatchers("/billing/**").hasAnyAuthority("PATIENT", "DOCTOR")
+                .antMatchers(HttpMethod.PUT, "/api/receptionist/appointment-reschedule/{appointmentId}").hasAuthority("RECEPTIONIST")
                 .anyRequest().authenticated()
-                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .and().sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
-    @Bean
     @Override
+    @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }

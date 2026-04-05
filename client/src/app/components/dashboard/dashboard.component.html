@@ -1,0 +1,24 @@
+<div class="dashboard-container">
+    <h1>Welcome to MediConnect Dashboard</h1>
+
+    <!-- DOCTOR VIEW -->
+    <div *ngIf="role === 'DOCTOR'">
+        <app-doctor-availability></app-doctor-availability>
+        <hr>
+        <app-doctor-appointment></app-doctor-appointment>
+    </div>
+
+    <!-- PATIENT VIEW -->
+    <div *ngIf="role === 'PATIENT'">
+        <app-schedule-appointment></app-schedule-appointment>
+        <hr>
+        <app-patient-appointment></app-patient-appointment>
+    </div>
+
+    <!-- RECEPTIONIST VIEW -->
+    <div *ngIf="role === 'RECEPTIONIST'">
+        <app-receptionist-schedule-appointments></app-receptionist-schedule-appointments>
+        <hr>
+        <app-receptionist-appointments></app-receptionist-appointments>
+    </div>
+</div>

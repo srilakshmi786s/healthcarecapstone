@@ -1,26 +1,54 @@
 package com.edutech.progressive.service;
 
 import com.edutech.progressive.entity.Appointment;
+import com.edutech.progressive.repository.AppointmentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-public interface AppointmentService {
-    List<Appointment> getAllAppointments();
+@Service
+public class AppointmentService {
 
-    int createAppointment(Appointment appointment);
+    private final AppointmentRepository appointmentRepository;
 
-    public void updateAppointment(Appointment appointment);
+    @Autowired
+    public AppointmentService(AppointmentRepository appointmentRepository) {
+        this.appointmentRepository = appointmentRepository;
+    }
 
-    public Appointment getAppointmentById(int appointmentId);
+    public List<Appointment> getAppointmentsByDoctorId(Long doctorId) {
+        return appointmentRepository.findAll().stream()
+                .filter(a -> a.getDoctor() != null && a.getDoctor().getId().equals(doctorId))
+                .collect(Collectors.toList());
+    }
 
-    public List<Appointment> getAppointmentByClinic(int clinicId);
+    public List<Appointment> getAppointmentsByPatientId(Long patientId) {
+        return appointmentRepository.findAll().stream()
+                .filter(a -> a.getPatient() != null && a.getPatient().getId().equals(patientId))
+                .collect(Collectors.toList());
+    }
 
-    public List<Appointment> getAppointmentByPatient(int patientId);
+    public Appointment createAppointment(Appointment appointment) {
+        return appointmentRepository.save(appointment);
+    }
 
-    public List<Appointment> getAppointmentByStatus(String status);
+    public Appointment updateAppointment(Long appointmentId, Appointment appointmentDetails) {
+        Appointment appointment = appointmentRepository.findById(appointmentId).orElse(null);
+        if (appointment != null) {
+            appointment.setAppointmentTime(appointmentDetails.getAppointmentTime());
+            appointment.setStatus(appointmentDetails.getStatus());
+            return appointmentRepository.save(appointment);
+        }
+        return null;
+    }
 
-    public void cancelAppointment(int appointmentId, String reason, String username);
+    public List<Appointment> getAllAppointments() {
+        return appointmentRepository.findAll();
+    }
 
-    public void rescheduleAppointment(int appointmentId, java.util.Date newDate, String username);
-
+    public Appointment getAppointmentById(Long id) {
+        return appointmentRepository.findById(id).orElse(null);
+    }
 }

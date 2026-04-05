@@ -1,0 +1,31 @@
+<div class="schedule-appointment-container">
+    <h2>Available Doctors</h2>
+    <div class="row">
+        <div class="col-md-4" *ngFor="let doctor of doctorList">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ doctor.username }}</h5>
+                    <p class="card-text">Specialty: {{ doctor.specialty }}</p>
+                    <p class="card-text">Availability: {{ doctor.availability }}</p>
+                    <button class="btn btn-secondary" (click)="addAppointment(doctor)">Select Doctor</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="isAdded" class="mt-4">
+        <h3>Schedule for Selected Doctor</h3>
+        <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+                <label for="appointmentTime">Select Date & Time</label>
+                <input type="datetime-local" id="appointmentTime" formControlName="appointmentTime" class="form-control">
+            </div>
+            <button type="submit" [disabled]="itemForm.invalid" class="btn btn-primary mt-2">Confirm Appointment</button>
+            <button type="button" (click)="isAdded = false" class="btn btn-link mt-2">Cancel</button>
+        </form>
+    </div>
+
+    <div *ngIf="responseMessage" class="alert mt-3" [class.alert-success]="responseMessage.includes('successfully')" [class.alert-danger]="!responseMessage.includes('successfully')">
+        {{ responseMessage }}
+    </div>
+</div>

@@ -1,0 +1,21 @@
+<div class="receptionist-schedule-appointments-container">
+    <h2>Direct Schedule (Receptionist)</h2>
+    <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label for="patientId">Patient ID</label>
+            <input type="number" id="patientId" formControlName="patientId" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="doctorId">Doctor ID</label>
+            <input type="number" id="doctorId" formControlName="doctorId" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="appointmentTime">Select Date & Time</label>
+            <input type="datetime-local" id="appointmentTime" formControlName="appointmentTime" class="form-control">
+        </div>
+        <button type="submit" [disabled]="itemForm.invalid" class="btn btn-primary mt-2">Schedule Appointment</button>
+    </form>
+    <div *ngIf="responseMessage" class="alert mt-3" [class.alert-success]="responseMessage.includes('successfully')" [class.alert-danger]="!responseMessage.includes('successfully')">
+        {{ responseMessage }}
+    </div>
+</div>

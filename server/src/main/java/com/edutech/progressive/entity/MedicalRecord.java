@@ -1,7 +1,7 @@
 package com.edutech.progressive.entity;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "medical_record")
@@ -9,69 +9,70 @@ public class MedicalRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "appointment_id", nullable = false, unique = true)
-    private Appointment appointment;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "patient_id")
+    private Patient patient;
 
-    @Column(name = "notes", columnDefinition = "TEXT")
-    private String notes;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "doctor_id")
+    private Doctor doctor;
 
-    @Column(name = "follow_up_instructions", columnDefinition = "TEXT")
-    private String followUpInstructions;
+    private String diagnosis;
+    private String treatment;
 
-    @Column(name = "attachments")
-    private String attachments; // e.g. path or comma-separated names
+    @Column(name = "record_date")
+    private LocalDateTime recordDate;
 
-    @Column(name = "created_at", nullable = false)
-    private Date createdAt;
+    public MedicalRecord() {
+    }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Appointment getAppointment() {
-        return appointment;
+    public Patient getPatient() {
+        return patient;
     }
 
-    public void setAppointment(Appointment appointment) {
-        this.appointment = appointment;
+    public void setPatient(Patient patient) {
+        this.patient = patient;
     }
 
-    public String getNotes() {
-        return notes;
+    public Doctor getDoctor() {
+        return doctor;
     }
 
-    public void setNotes(String notes) {
-        this.notes = notes;
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
     }
 
-    public String getFollowUpInstructions() {
-        return followUpInstructions;
+    public String getDiagnosis() {
+        return diagnosis;
     }
 
-    public void setFollowUpInstructions(String followUpInstructions) {
-        this.followUpInstructions = followUpInstructions;
+    public void setDiagnosis(String diagnosis) {
+        this.diagnosis = diagnosis;
     }
 
-    public String getAttachments() {
-        return attachments;
+    public String getTreatment() {
+        return treatment;
     }
 
-    public void setAttachments(String attachments) {
-        this.attachments = attachments;
+    public void setTreatment(String treatment) {
+        this.treatment = treatment;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
+    public LocalDateTime getRecordDate() {
+        return recordDate;
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void setRecordDate(LocalDateTime recordDate) {
+        this.recordDate = recordDate;
     }
 }

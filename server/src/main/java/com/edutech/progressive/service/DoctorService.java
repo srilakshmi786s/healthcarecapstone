@@ -1,30 +1,36 @@
 package com.edutech.progressive.service;
 
-import com.edutech.progressive.dto.DoctorDTO;
 import com.edutech.progressive.entity.Doctor;
+import com.edutech.progressive.repository.DoctorRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.List;
 
-public interface DoctorService {
+@Service
+public class DoctorService {
 
-    public List<Doctor> getAllDoctors()throws Exception;
+    private final DoctorRepository doctorRepository;
 
-    public Integer addDoctor(Doctor doctor)throws Exception;
-
-    public List<Doctor> getDoctorSortedByExperience()throws Exception;
-
-    default void emptyArrayList()throws Exception {
+    @Autowired
+    public DoctorService(DoctorRepository doctorRepository) {
+        this.doctorRepository = doctorRepository;
     }
 
-    //Do not implement these methods in DoctorServiceImplArraylist.java class
-    default public void updateDoctor(Doctor doctor)throws Exception { }
+    public Doctor getDoctorById(Long doctorId) {
+        return doctorRepository.findById(doctorId).orElse(null);
+    }
 
-    default public void deleteDoctor(int doctorId)throws Exception { }
+    public List<Doctor> getAllDoctors() {
+        return doctorRepository.findAll();
+    }
 
-    default Doctor getDoctorById(int doctorId)throws Exception { return null; }
-
-    //Do not implement these methods in DoctorServiceImplArraylist.java and DoctorServiceImplJdbc.java class
-    // Do not implement this method until day-13
-    default public void modifyDoctorDetails(DoctorDTO doctorDTO)throws Exception { }
+    public Doctor updateAvailability(Long doctorId, String availability) {
+        Doctor doctor = doctorRepository.findById(doctorId).orElse(null);
+        if (doctor != null) {
+            doctor.setAvailability(availability);
+            return doctorRepository.save(doctor);
+        }
+        return null;
+    }
 }

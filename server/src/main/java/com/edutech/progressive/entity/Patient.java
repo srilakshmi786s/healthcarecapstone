@@ -1,110 +1,37 @@
 package com.edutech.progressive.entity;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
-import javax.persistence.Table;
-
+import java.util.Set;
 
 @Entity
-@Table(name = "patient")
-public class Patient implements Comparable<Patient>{
+@Table(name = "patients")
+@PrimaryKeyJoinColumn(name = "user_id")
+public class Patient extends User {
 
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name="patient_id")
-    private int patientId;
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    private Set<MedicalRecord> medicalRecords;
 
-    @Column(name = "full_name",nullable = false)
-    private String fullName;
-
-    @Column(name="date_of_birth")
-    private Date dateOfBirth;
-
-    @Column(name="contact_number")
-    private String contactNumber;
-
-    @Column(name = "email",nullable = false)
-    private String email;
-
-    @Column(name="address")
-    private String address;
-
+    @OneToMany(mappedBy = "patient")
+    @JsonIgnore
+    private Set<Appointment> appointments;
 
     public Patient() {
     }
 
-    public Patient(int patientId, String fullName, Date dateOfBirth, String contactNumber, String email,
-            String address) {
-        this.patientId = patientId;
-        this.fullName = fullName;
-        this.dateOfBirth = dateOfBirth;
-        this.contactNumber = contactNumber;
-        this.email = email;
-        this.address = address;
+    public Set<MedicalRecord> getMedicalRecords() {
+        return medicalRecords;
     }
 
-    public int getPatientId() {
-        return patientId;
+    public void setMedicalRecords(Set<MedicalRecord> medicalRecords) {
+        this.medicalRecords = medicalRecords;
     }
 
-    public void setPatientId(int patientId) {
-        this.patientId = patientId;
+    public Set<Appointment> getAppointments() {
+        return appointments;
     }
 
-    public String getFullName() {
-        return fullName;
+    public void setAppointments(Set<Appointment> appointments) {
+        this.appointments = appointments;
     }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public Date getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public String getContactNumber() {
-        return contactNumber;
-    }
-
-    public void setContactNumber(String contactNumber) {
-        this.contactNumber = contactNumber;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    @Override
-    public int compareTo(Patient o) {
-        // if(o==null || o.getFullName()==null ) return 1;
-        // if(this.getFullName()==null) return -1;
-        return this.fullName.compareToIgnoreCase(o.fullName);
-    }
-
-    
-
-    
-
 }

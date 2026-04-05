@@ -9,32 +9,29 @@ public class Appointment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer appointmentId;
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "patient_id", nullable = false)
+    @JoinColumn(name = "patient_id")
     private Patient patient;
 
     @ManyToOne
-    @JoinColumn(name = "clinic_id", nullable = false)
-    private Clinic clinic;
+    @JoinColumn(name = "doctor_id")
+    private Doctor doctor;
 
-    @Column(name = "appointment_date", nullable = false)
-    private Date appointmentDate;
+    private Date appointmentTime;
 
-    @Column(name = "status", nullable = false)
-    private String status; 
+    private String status;
 
-    @Column(name = "purpose")
-    private String purpose;
-
-
-    public Integer getAppointmentId() {
-        return appointmentId;
+    public Appointment() {
     }
 
-    public void setAppointmentId(Integer appointmentId) {
-        this.appointmentId = appointmentId;
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Patient getPatient() {
@@ -45,20 +42,20 @@ public class Appointment {
         this.patient = patient;
     }
 
-    public Clinic getClinic() {
-        return clinic;
+    public Doctor getDoctor() {
+        return doctor;
     }
 
-    public void setClinic(Clinic clinic) {
-        this.clinic = clinic;
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
     }
 
-    public Date getAppointmentDate() {
-        return appointmentDate;
+    public Date getAppointmentTime() {
+        return appointmentTime;
     }
 
-    public void setAppointmentDate(Date appointmentDate) {
-        this.appointmentDate = appointmentDate;
+    public void setAppointmentTime(Date appointmentTime) {
+        this.appointmentTime = appointmentTime;
     }
 
     public String getStatus() {
@@ -67,23 +64,5 @@ public class Appointment {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public String getPurpose() {
-        return purpose;
-    }
-
-    public void setPurpose(String purpose) {
-        this.purpose = purpose;
-    }
-    @Column(name = "cancellation_reason")
-    private String cancellationReason;
-
-    public String getCancellationReason() {
-        return cancellationReason;
-    }
-
-    public void setCancellationReason(String cancellationReason) {
-        this.cancellationReason = cancellationReason;
     }
 }

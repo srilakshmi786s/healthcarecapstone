@@ -1,88 +1,50 @@
 package com.edutech.progressive.controller;
 
-import com.edutech.progressive.dto.PatientDTO;
-import com.edutech.progressive.entity.Patient;
-import com.edutech.progressive.service.impl.PatientServiceImplArraylist;
-import com.edutech.progressive.service.impl.PatientServiceImplJpa;
-
+import com.edutech.progressive.entity.Appointment;
+import com.edutech.progressive.entity.Doctor;
+import com.edutech.progressive.entity.MedicalRecord;
+import com.edutech.progressive.service.AppointmentService;
+import com.edutech.progressive.service.DoctorService;
+import com.edutech.progressive.service.MedicalRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/patient")
 public class PatientController {
 
+    private final AppointmentService appointmentService;
+    private final MedicalRecordService medicalRecordService;
+    private final DoctorService doctorService;
+
     @Autowired
-    PatientServiceImplJpa patientServiceImplJpa;
-
-    @GetMapping
-    public ResponseEntity<List<Patient>> getAllPatients() {
-        try {
-            List<Patient> patientList = patientServiceImplJpa.getAllPatients();
-            return new ResponseEntity<>(patientList, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public PatientController(AppointmentService appointmentService, 
+                             MedicalRecordService medicalRecordService, 
+                             DoctorService doctorService) {
+        this.appointmentService = appointmentService;
+        this.medicalRecordService = medicalRecordService;
+        this.doctorService = doctorService;
     }
 
-    @GetMapping("/{patientId}")
-    public ResponseEntity<?> getPatientById(@PathVariable int patientId) {
-        try {
-            Patient patient = patientServiceImplJpa.getPatientById(patientId);
-            return new ResponseEntity<>(patient, HttpStatus.OK);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            return new ResponseEntity<>("An error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @GetMapping("/api/patient/doctors")
+    public ResponseEntity<List<Doctor>> getAllDoctors() {
+        return ResponseEntity.ok(doctorService.getAllDoctors());
     }
 
-    @PostMapping
-    public ResponseEntity<?> addPatient(@RequestBody Patient patient) {
-        try {
-            int patientId = patientServiceImplJpa.addPatient(patient);
-            return new ResponseEntity<>(patientId, HttpStatus.CREATED);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            return new ResponseEntity<>("An error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @PostMapping("/api/patient/appointment")
+    public ResponseEntity<Appointment> createAppointment(@RequestBody Appointment appointment) {
+        return ResponseEntity.ok(appointmentService.createAppointment(appointment));
     }
 
-    @PutMapping("/{patientId}")
-    public ResponseEntity<?> updatePatient(@PathVariable int patientId, @RequestBody PatientDTO patient) {
-        try {
-            patient.setPatientId(patientId);
-            patientServiceImplJpa.modifyPatientDetails(patient);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            return new ResponseEntity<>("An error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @GetMapping("/api/patient/appointments")
+    public ResponseEntity<List<Appointment>> getPatientAppointments(@RequestParam Long patientId) {
+        return ResponseEntity.ok(appointmentService.getAppointmentsByPatientId(patientId));
     }
 
-    @DeleteMapping("/{patientId}")
-    public ResponseEntity<?> deletePatient(@PathVariable int patientId) {
-        try {
-            patientServiceImplJpa.deletePatient(patientId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            return new ResponseEntity<>("An error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @GetMapping("/api/patient/medicalrecords")
+    public ResponseEntity<List<MedicalRecord>> getMedicalRecords(@RequestParam Long patientId) {
+        return ResponseEntity.ok(medicalRecordService.getMedicalRecordsByPatientId(patientId));
     }
 }

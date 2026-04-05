@@ -1,0 +1,41 @@
+<div class="receptionist-appointments-container">
+    <h2>All Appointments</h2>
+    <table class="table" *ngIf="appointmentList.length > 0">
+        <thead>
+            <tr>
+                <th>Patient</th>
+                <th>Doctor</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let appointment of appointmentList">
+                <td>{{ appointment.patient?.username }}</td>
+                <td>{{ appointment.doctor?.username }}</td>
+                <td>{{ appointment.appointmentTime | date:'short' }}</td>
+                <td>{{ appointment.status }}</td>
+                <td>
+                    <button class="btn btn-warning" (click)="editAppointment(appointment)">Reschedule</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div *ngIf="isAdded" class="mt-4">
+        <h3>Reschedule Appointment</h3>
+        <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+                <label for="time">Select New Date & Time</label>
+                <input type="datetime-local" id="time" formControlName="time" class="form-control">
+            </div>
+            <button type="submit" [disabled]="itemForm.invalid" class="btn btn-primary mt-2">Confirm New Time</button>
+            <button type="button" (click)="isAdded = false" class="btn btn-link mt-2">Cancel</button>
+        </form>
+    </div>
+
+    <div *ngIf="responseMessage" class="alert mt-3" [class.alert-success]="responseMessage.includes('successfully')" [class.alert-danger]="!responseMessage.includes('successfully')">
+        {{ responseMessage }}
+    </div>
+</div>

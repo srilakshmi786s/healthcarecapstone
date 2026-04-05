@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +8,20 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'frontend';
+  IsLoggin: boolean = false;
+  roleName: string | null = null;
+
+  constructor(private authService: AuthService, private router: Router) {
+    this.IsLoggin = this.authService.getLoginStatus;
+    this.roleName = this.authService.getRole;
+
+    if (!this.IsLoggin) {
+      this.router.navigate(['/login']);
+    }
+  }
+
+  logout() {
+    this.authService.logout();
+    window.location.reload();
+  }
 }
