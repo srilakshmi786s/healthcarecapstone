@@ -1,0 +1,17 @@
+# Angular client build artifacts & dependencies
+client/node_modules/
+client/dist/
+client/.angular/
+
+# Spring Boot build artifacts
+server/target/
+
+# IDE / OS files
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+*.class
+
+# Logs
+*.log

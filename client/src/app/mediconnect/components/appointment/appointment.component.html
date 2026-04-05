@@ -17,21 +17,25 @@
           </select>
       </div>
 
-      <div class="form-group">
-          <label for="appointmentDate">Appointment Date:</label>
-          <input type="date" id="appointmentDate" formControlName="appointmentDate" />
-          <div
-              *ngIf="appointmentForm.controls['appointmentDate'].invalid && appointmentForm.controls['appointmentDate'].touched">
-              Appointment date is required.
+      <div class="form-group" *ngIf="availableSlots.length > 0">
+          <label for="appointmentDate">Select Available Slot:</label>
+          <select id="appointmentDate" formControlName="appointmentDate">
+            <option value="" disabled>Select a slot</option>
+            <option *ngFor="let slot of availableSlots" [value]="slot.availableDate + ' ' + slot.startTime + ':00'">
+                {{slot.availableDate | date}} ({{slot.startTime}} - {{slot.endTime}})
+            </option>
+          </select>
+          <div *ngIf="appointmentForm.controls['appointmentDate'].invalid && appointmentForm.controls['appointmentDate'].touched">
+              Please select a valid slot.
           </div>
       </div>
+      <div *ngIf="availableSlots.length === 0 && appointmentForm.get('clinic')?.value">
+          <p style="color:red">No slots available for this clinic.</p>
+      </div>
 
-      <div class="form-group">
+      <div class="form-group" style="display:none;">
           <label for="status">Status:</label>
           <input type="text" id="status" formControlName="status" />
-          <div *ngIf="appointmentForm.controls['status'].invalid && appointmentForm.controls['status'].touched">
-              Status is required.
-          </div>
       </div>
 
       <div class="form-group">

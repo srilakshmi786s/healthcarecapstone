@@ -131,4 +131,52 @@ export class MediConnectService {
   getUserById(userId: number): Observable<any> {
     return this.http.get<User>(`${this.baseUrl}/user/${userId}`);
   }
+
+  // --- NEW CAPSTONE EXTENSIONS ---
+
+  updateDoctorAvailability(availability: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/api/doctor/availability`, availability);
+  }
+
+  getDoctorAvailability(doctorId: number, date?: string): Observable<any[]> {
+    let url = `${this.baseUrl}/api/patient/availability?doctorId=${doctorId}`;
+    if(date) url += `&date=${date}`;
+    return this.http.get<any[]>(url);
+  }
+
+  getAppointmentByDoctor(): Observable<Appointment[]> {
+    return this.http.get<Appointment[]>(`${this.baseUrl}/api/doctor/appointments`);
+  }
+
+  ScheduleAppointmentForPatient(appointment: Appointment): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/api/patient/appointment`, appointment);
+  }
+
+  ScheduleAppointmentForReceptionist(appointment: Appointment): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/api/receptionist/appointment`, appointment);
+  }
+
+  reScheduleAppointment(appointmentId: number, newTime: number): Observable<any> {
+    return this.http.put<any>(`${this.baseUrl}/api/receptionist/appointment-reschedule/${appointmentId}`, { newTime });
+  }
+
+  cancelAppointmentPatient(appointmentId: number, reason: string): Observable<any> {
+    return this.http.put<any>(`${this.baseUrl}/api/patient/appointment-cancel/${appointmentId}`, { reason });
+  }
+
+  getNotifications(userId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/api/notifications?userId=${userId}`);
+  }
+
+  markNotificationRead(notificationId: number): Observable<any> {
+    return this.http.put<any>(`${this.baseUrl}/api/notifications/${notificationId}/read`, {});
+  }
+
+  getPatientMedicalRecords(patientId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/api/patient/medicalrecords?patientId=${patientId}`);
+  }
+
+  saveMedicalRecord(doctorId: number, record: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/api/doctor/medicalrecords?doctorId=${doctorId}`, record);
+  }
 }

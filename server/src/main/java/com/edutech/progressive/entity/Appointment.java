@@ -76,4 +76,14 @@ public class Appointment {
     public void setPurpose(String purpose) {
         this.purpose = purpose;
     }
+    @Column(name = "cancellation_reason")
+    private String cancellationReason;
+
+    public String getCancellationReason() {
+        return cancellationReason;
+    }
+
+    public void setCancellationReason(String cancellationReason) {
+        this.cancellationReason = cancellationReason;
+    }
 }

@@ -44,7 +44,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/user/register", "/user/login").permitAll()
+                .antMatchers("/user/register", "/user/login",
+                        "/api/patient/register", "/api/doctors/register",
+                        "/api/receptionist/register", "/api/user/login",
+                        "/api/auth/forgot-password", "/api/auth/reset-password").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/doctor/availability").hasAuthority("DOCTOR")
+                .antMatchers(HttpMethod.GET, "/api/doctor/appointments").hasAuthority("DOCTOR")
+                .antMatchers(HttpMethod.GET, "/api/patient/doctors").hasAuthority("PATIENT")
+                .antMatchers(HttpMethod.GET, "/api/patient/appointments").hasAuthority("PATIENT")
+                .antMatchers(HttpMethod.GET, "/api/patient/medicalrecords").hasAuthority("PATIENT")
+                .antMatchers(HttpMethod.POST, "/api/patient/appointment").hasAuthority("PATIENT")
+                .antMatchers(HttpMethod.GET, "/api/patient/availability").hasAuthority("PATIENT")
+                .antMatchers(HttpMethod.POST, "/api/receptionist/appointment").hasAuthority("RECEPTIONIST")
+                .antMatchers(HttpMethod.PUT, "/api/receptionist/appointment-reschedule/**").hasAuthority("RECEPTIONIST")
+                .antMatchers(HttpMethod.GET, "/api/receptionist/appointments").hasAuthority("RECEPTIONIST")
+                .antMatchers(HttpMethod.POST, "/api/doctor/medicalrecords").hasAuthority("DOCTOR")
+                .antMatchers(HttpMethod.GET, "/api/doctor/medicalrecords/**").hasAuthority("DOCTOR")
                 .antMatchers(HttpMethod.GET, "/patient/**").hasAnyAuthority("PATIENT", "DOCTOR")
                 .antMatchers(HttpMethod.POST, "/patient/**").hasAuthority("DOCTOR")
                 .antMatchers(HttpMethod.PUT, "/patient/**").hasAuthority("PATIENT")

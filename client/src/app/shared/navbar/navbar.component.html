@@ -11,6 +11,24 @@
     <li *ngIf="role !== 'DOCTOR'">
       <a routerLink="/mediconnect/appointment" class="nav-link">Book Appointment</a>
     </li>
+
+    <li *ngIf="userId" class="notification-container">
+      <button class="nav-link icon-btn" (click)="toggleDropdown()">
+        🔔 <span class="badge" *ngIf="unreadCount > 0">{{unreadCount}}</span>
+      </button>
+      <div class="dropdown-menu" *ngIf="showDropdown">
+        <div class="dropdown-header">Notifications</div>
+        <div class="dropdown-items">
+          <div *ngIf="notifications.length === 0" class="notif-item">No notifications</div>
+          <div *ngFor="let n of notifications" 
+               class="notif-item" 
+               [ngClass]="{'unread': !n.isRead}"
+               (click)="markAsRead(n.id, $event)">
+            {{n.message}}
+          </div>
+        </div>
+      </div>
+    </li>
   </ul>
 
   <app-logout></app-logout>

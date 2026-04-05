@@ -27,6 +27,7 @@ import { ClinicEditComponent } from "./components/clinicedit/clinicedit.componen
   ],
   imports: [
     CommonModule,
+    FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
     MediconnectRoutingModule,

@@ -34,16 +34,29 @@ export class AppointmentCreateComponent implements OnInit {
             patientId: [{value: this.patientId , disabled: true}],
             clinic: ["", [Validators.required]],
             appointmentDate: ['', [Validators.required]],
-            status: ['', [Validators.required]],
+            status: ['REQUESTED'], // default status
             purpose: ['', [Validators.required, Validators.minLength(5)]]
         });
+
         this.mediconnectService.getAllClinics().subscribe({
-            next: (response) => {
+            next: (response: any) => {
                 this.clinics = response;
             },
-            error: (error) => console.log('Error loading clinics', error)
+            error: (error: any) => console.log('Error loading clinics', error)
+        });
+
+        this.appointmentForm.get('clinic')?.valueChanges.subscribe(clinic => {
+            if(clinic && clinic.doctor && clinic.doctor.doctorId) {
+                this.availableSlots = [];
+                this.mediconnectService.getDoctorAvailability(clinic.doctor.doctorId).subscribe({
+                    next: (slots: any[]) => this.availableSlots = slots.filter(s => s.status === 'AVAILABLE'),
+                    error: (err: any) => console.log('Error loading slots for clinic doctor')
+                });
+            }
         });
     }
+
+    availableSlots: any[] = [];
 
     onSubmit(): void {
         if (this.appointmentForm.valid) {

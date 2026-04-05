@@ -19,4 +19,8 @@ public interface AppointmentService {
 
     public List<Appointment> getAppointmentByStatus(String status);
 
+    public void cancelAppointment(int appointmentId, String reason, String username);
+
+    public void rescheduleAppointment(int appointmentId, java.util.Date newDate, String username);
+
 }

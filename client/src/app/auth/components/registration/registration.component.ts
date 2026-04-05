@@ -48,27 +48,48 @@ export class RegistrationComponent {
         const role = selectElement.value;
         this.selectedRole = role;
 
-        
         if (role === 'DOCTOR') {
             this.registrationForm.patchValue({ dateOfBirth: null, address: '' });
+            this.registrationForm.get('specialty')?.setValidators([Validators.required]);
+            this.registrationForm.get('specialty')?.updateValueAndValidity();
         } else if (role === 'PATIENT') {
             this.registrationForm.patchValue({ specialty: '', yearsOfExperience: null });
+            this.registrationForm.get('specialty')?.clearValidators();
+            this.registrationForm.get('specialty')?.updateValueAndValidity();
+        } else {
+            this.registrationForm.get('specialty')?.clearValidators();
+            this.registrationForm.get('specialty')?.updateValueAndValidity();
         }
     }
 
 
     onSubmit(): void {
         if (this.registrationForm.valid) {
-            this.authService.createUser(this.registrationForm.value).subscribe(
-                (response: string) => {
+            const role = this.registrationForm.get('role')?.value;
+            let req$;
+            if(role === 'PATIENT') {
+                req$ = this.authService.registerPatient(this.registrationForm.value);
+            } else if (role === 'DOCTOR') {
+                req$ = this.authService.registerDoctors(this.registrationForm.value);
+            } else if (role === 'RECEPTIONIST') {
+                req$ = this.authService.registerReceptionist(this.registrationForm.value);
+            } else {
+                this.errorMessage = 'Invalid role selected.';
+                return;
+            }
+
+            req$.subscribe(
+                (response: any) => {
                     this.successMessage = "User successfully registered";
                     this.errorMessage = null;
                     this.resetForm();
                     console.log('Success:', this.successMessage);
                 },
                 (error: HttpErrorResponse) => {
-                    if (error.error) {
+                    if (error.error && typeof error.error === 'string') {
                         this.errorMessage = error.error;
+                    } else if (error.error && error.error.message) {
+                        this.errorMessage = error.error.message;
                     } else {
                         this.errorMessage = 'An unexpected error occurred. Please try again later.';
                     }
@@ -81,7 +102,6 @@ export class RegistrationComponent {
             this.successMessage = null;
         }
     }
-    
 
     resetForm(): void {
         this.registrationForm.reset();
